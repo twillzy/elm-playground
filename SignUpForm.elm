@@ -1,4 +1,9 @@
-module Main exposing (..)
+module SignUpForm exposing (..)
+
+import Html.App
+import Html exposing (..)
+import Html.Events exposing (..)
+import Html.Attributes exposing (id, type, class, value)
 
 
 view model =
