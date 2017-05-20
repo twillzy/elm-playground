@@ -4,6 +4,8 @@ import Html exposing (..)
 import Html.Events exposing (..)
 import Html.Attributes exposing (id, type_, for, class, value)
 import Http
+import Task exposing (Task)
+import Json.Decode exposing (succeed)
 
 
 initialModel =
@@ -11,7 +13,7 @@ initialModel =
 
 
 initialErrors =
-    { username = "", password = "" }
+    { username = "", password = "", usernameTaken = False }
 
 
 main =
@@ -25,13 +27,46 @@ main =
 
 update msg model =
     if msg.msgType == "VALIDATE" then
-        ( { model | errors = getErrors model }, Cmd.none )
+        let
+            url =
+                "https://api.github.com/users/" ++ model.username
+
+            handleResponse result =
+                case result of
+                    Ok _ ->
+                        { msgType = "USERNAME_TAKEN", payload = "" }
+
+                    Err _ ->
+                        { msgType = "USERNAME_AVAILABLE", payload = "" }
+
+            request =
+                Http.get url (succeed "")
+
+            cmd =
+                Http.send handleResponse request
+        in
+            ( { model | errors = getErrors model }, cmd )
     else if msg.msgType == "SET_USERNAME" then
         ( { model | username = msg.payload }, Cmd.none )
     else if msg.msgType == "SET_PASSWORD" then
         ( { model | password = msg.payload }, Cmd.none )
+    else if msg.msgType == "USERNAME_TAKEN" then
+        ( withUsernameTaken True model, Cmd.none )
+    else if msg.msgType == "USERNAME_AVAILABLE" then
+        ( withUsernameTaken False model, Cmd.none )
     else
         ( model, Cmd.none )
+
+
+withUsernameTaken isTaken model =
+    let
+        currentErrors =
+            model.errors
+
+        newErrors =
+            { currentErrors | usernameTaken = isTaken }
+    in
+        { model | errors = newErrors }
 
 
 getErrors model =
@@ -45,7 +80,15 @@ getErrors model =
             "Please enter a password!"
         else
             ""
+    , usernameTaken = model.errors.usernameTaken
     }
+
+
+viewUsernameErrors model =
+    if model.errors.usernameTaken then
+        "That username is taken!"
+    else
+        model.errors.username
 
 
 view model =
@@ -60,6 +103,7 @@ view model =
             ]
             []
         , div [ class "validation-error" ] [ text model.errors.username ]
+        , div [ class "validation-error" ] [ text (viewUsernameErrors model) ]
         , label [ for "password" ] [ text "password: " ]
         , input
             [ id "password-field"
