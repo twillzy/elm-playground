@@ -15,7 +15,7 @@ main =
 
 
 initialErrors =
-    { username = "bad username", password = "bad password" }
+    { username = "", password = "" }
 
 
 update msg model =
