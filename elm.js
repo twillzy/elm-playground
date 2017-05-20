@@ -8305,7 +8305,14 @@ var _user$project$SignupForm$view = function (model) {
 								_1: {
 									ctor: '::',
 									_0: _elm_lang$html$Html_Attributes$value(model.username),
-									_1: {ctor: '[]'}
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onInput(
+											function (str) {
+												return {msgType: 'SET_USERNAME', payload: str};
+											}),
+										_1: {ctor: '[]'}
+									}
 								}
 							}
 						},
@@ -8321,7 +8328,7 @@ var _user$project$SignupForm$view = function (model) {
 							},
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html$text(model.errors.password),
+								_0: _elm_lang$html$Html$text(model.errors.username),
 								_1: {ctor: '[]'}
 							}),
 						_1: {
@@ -8351,7 +8358,14 @@ var _user$project$SignupForm$view = function (model) {
 											_1: {
 												ctor: '::',
 												_0: _elm_lang$html$Html_Attributes$value(model.password),
-												_1: {ctor: '[]'}
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onInput(
+														function (str) {
+															return {msgType: 'SET_PASSWORD', payload: str};
+														}),
+													_1: {ctor: '[]'}
+												}
 											}
 										}
 									},
@@ -8377,7 +8391,12 @@ var _user$project$SignupForm$view = function (model) {
 											{
 												ctor: '::',
 												_0: _elm_lang$html$Html_Attributes$class('signup-button'),
-												_1: {ctor: '[]'}
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onClick(
+														{msgType: 'VALIDDATE', payload: ''}),
+													_1: {ctor: '[]'}
+												}
 											},
 											{
 												ctor: '::',
@@ -8410,16 +8429,25 @@ var _user$project$SignupForm$update = F2(
 					errors: _user$project$SignupForm$getErrors(model)
 				}),
 			_1: _elm_lang$core$Platform_Cmd$none
-		} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		} : (_elm_lang$core$Native_Utils.eq(msg.msgType, 'SET_USERNAME') ? {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{username: msg.payload}),
+			_1: _elm_lang$core$Platform_Cmd$none
+		} : (_elm_lang$core$Native_Utils.eq(msg.msgType, 'SET_PASSWORD') ? {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{password: msg.payload}),
+			_1: _elm_lang$core$Platform_Cmd$none
+		} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none}));
 	});
-var _user$project$SignupForm$initialErrors = {username: 'bad username', password: 'bad password'};
+var _user$project$SignupForm$initialErrors = {username: '', password: ''};
+var _user$project$SignupForm$initialModel = {username: '', password: '', errors: _user$project$SignupForm$initialErrors};
 var _user$project$SignupForm$main = _elm_lang$html$Html$program(
 	{
-		init: {
-			ctor: '_Tuple2',
-			_0: {username: '', password: '', errors: _user$project$SignupForm$initialErrors},
-			_1: _elm_lang$core$Platform_Cmd$none
-		},
+		init: {ctor: '_Tuple2', _0: _user$project$SignupForm$initialModel, _1: _elm_lang$core$Platform_Cmd$none},
 		view: _user$project$SignupForm$view,
 		update: _user$project$SignupForm$update,
 		subscriptions: function (_p0) {
