@@ -3,6 +3,7 @@ module SignupForm exposing (..)
 import Html exposing (..)
 import Html.Events exposing (..)
 import Html.Attributes exposing (id, type_, for, class, value)
+import Http
 
 
 initialModel =
